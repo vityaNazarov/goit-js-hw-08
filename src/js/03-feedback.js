@@ -1,60 +1,77 @@
+// import throttle from 'lodash.throttle';
+// const refs = {
+//   form: document.querySelector('.feedback-form'),
+//   email: document.querySelector('input'),
+//   message: document.querySelector('textarea'),
+//   button: document.querySelector('button'),
+// };
+// refs.form.addEventListener('submit', onButtonClick);
+// refs.form.addEventListener('input', throttle(onInputClick, 500));
+
+// const LOCALSTORAGE_KEY = 'feedback-form-state';
+// const formDate = {};
+
+// function onButtonClick(e) {
+//   e.preventDefault();
+//   if (refs.email.value === '') {
+//     alert('всі поля повинні бути заповнені!');
+//   } else if (refs.message.value === '') {
+//     alert('всі поля повинні бути заповнені!');
+//   } else {
+//     localStorage.removeItem(LOCALSTORAGE_KEY);
+//     console.log(formDate);
+//     e.currentTarget.reset();
+//   }
+// }
+
+// function onInputClick(e) {
+//   formDate[e.target.name] = e.target.value;
+//   localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(formDate));
+// }
+// if (localStorage.getItem(LOCALSTORAGE_KEY)) {
+//   console.log(localStorage);
+// }
+
 import throttle from 'lodash.throttle';
 
-const refs = {
-  form: document.querySelector('.feedback-form'),
-  email: document.querySelector('input'),
-  message: document.querySelector('textarea'),
-  button: document.querySelector('button'),
-};
-const LOCALSTORAGE_KEY = 'feedback-form-state';
-const formDate = {};
+const STORAGE_KEY = 'feedback-form-state';
+const formData = {};
 
-texteriaMessage(formDate);
-refs.form.addEventListener('submit', onButtonClick);
-refs.form.addEventListener('input', onInputClick);
-refs.email.addEventListener('input', throttle(onEmail, 500));
-refs.message.addEventListener('input', throttle(onMessage, 500));
+const formEl = document.querySelector('form');
 
-function onButtonClick(e) {
+formEl.addEventListener('submit', onFormSubmit);
+formEl.addEventListener('input', throttle(onformEl, 500));
+
+fillForm();
+
+function onFormSubmit(e) {
   e.preventDefault();
-  if (refs.email.value === '') {
-    alert('всі поля повинні бути заповнені!');
-  } else if (refs.message.value === '') {
-    alert('всі поля повинні бути заповнені!');
-  } else {
-    localStorage.removeItem(LOCALSTORAGE_KEY);
-    localStorage.removeItem('Email');
-    console.log(formDate);
-    e.currentTarget.reset();
-  }
-}
-function onInputClick(e) {
-  formDate[e.target.name] = e.target.value;
-  // console.log(formDate);
+
+  const {
+    elements: { email, message },
+  } = e.target;
+
+  console.log({ Email: email.value, Message: message.value });
+
+  formEl.reset();
+  localStorage.removeItem(STORAGE_KEY);
 }
 
-function onEmail(e) {
-  const email = JSON.stringify(formDate[e.target.name]);
-  localStorage.setItem('Email', email);
+function onformEl(e) {
+  formData[e.target.name] = e.target.value;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
 }
 
-function onMessage(e) {
-  const message = JSON.stringify(formDate[e.target.name]);
-  localStorage.setItem(LOCALSTORAGE_KEY, message);
-  // console.log(message)
-}
+function fillForm() {
+  const savedForm = localStorage.getItem(STORAGE_KEY);
 
-function texteriaMessage() {
-  const saveMessage = localStorage.getItem(LOCALSTORAGE_KEY);
-  const saveEmail = localStorage.getItem('Email');
+  if (savedForm) {
+    const parceSavedForm = JSON.parse(savedForm);
 
-  if (saveMessage) {
-    refs.message.value = JSON.parse(saveMessage);
-    formDate.message = refs.message.value;
-  }
-
-  if (saveEmail) {
-    refs.email.value = JSON.parse(saveEmail);
-    formDate.email = refs.email.value;
+    const keys = Object.keys(parceSavedForm);
+    for (const key of keys) {
+      formEl.elements[key].value = parceSavedForm[key];
+      formData[key] = parceSavedForm[key];
+    }
   }
 }

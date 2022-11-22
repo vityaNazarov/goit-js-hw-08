@@ -15,4 +15,6 @@ function onPlay({ seconds }) {
   }
 }
 
-player.setCurrentTime(localStorage.getItem(LOCALSTORAGE_KEY));
+if (localStorage.getItem(LOCALSTORAGE_KEY)) {
+  player.setCurrentTime(localStorage.getItem(LOCALSTORAGE_KEY));
+}
