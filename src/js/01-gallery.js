@@ -4,7 +4,7 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 // Change code below this line
 
-console.log(galleryItems);
+// console.log(galleryItems);
 
 const refs = {
   gallery: document.querySelector('.gallery'),
@@ -20,6 +20,7 @@ function createGalleryMarkup(galleryItems) {
 </li>`;
     })
     .join('');
+  // preventDefault();
 }
 refs.gallery.insertAdjacentHTML('beforeend', createGalleryMarkup(galleryItems));
 
@@ -28,4 +29,3 @@ const gallery = new SimpleLightbox('.gallery a', {
   captionDelay: 250,
   overlayOpacity: 0.8,
 });
-preventDefault();
